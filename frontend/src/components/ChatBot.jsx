@@ -261,3 +261,4 @@ export default function ChatBot({ projectId = 'nexus-college' }) {
     </div>
   );
 }
+
