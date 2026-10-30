@@ -114,7 +114,14 @@ export default function Heatmaps({ selectedPageOverride, showToast, onRefresh })
     return true;
   });
 
-  const availablePages = data?.available_pages || [];
+  const availablePages = (data?.available_pages && data.available_pages.length > 0)
+    ? data.available_pages
+    : [
+        { page_url: '/demo/index.html', click_count: 0 },
+        { page_url: '/demo/register.html', click_count: 0 },
+        { page_url: '/demo/courses.html', click_count: 0 }
+      ];
+  const activeRoute = selectedPage || '/demo/index.html';
   const totalClicksOnPage = points.length;
   const rageHotspotCount = clusteredPoints.filter(p => p.count >= 4).length;
 
@@ -160,32 +167,28 @@ export default function Heatmaps({ selectedPageOverride, showToast, onRefresh })
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
             Routes:
           </span>
-          {availablePages.length > 0 ? (
-            availablePages.map((p, i) => {
-              const isSelected = selectedPage === p.page_url;
-              return (
-                <button
-                  key={i}
-                  onClick={() => handlePageChange(p.page_url)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 border ${
-                    isSelected
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80'
-                  }`}
-                >
-                  <Globe className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
-                  <span className="font-mono">{p.page_url}</span>
-                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                    isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-                  }`}>
-                    {p.click_count}
-                  </span>
-                </button>
-              );
-            })
-          ) : (
-            <span className="text-xs text-slate-400 italic">No routes recorded yet</span>
-          )}
+          {availablePages.map((p, i) => {
+            const isSelected = activeRoute === p.page_url;
+            return (
+              <button
+                key={i}
+                onClick={() => handlePageChange(p.page_url)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition shrink-0 border ${
+                  isSelected
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/80'
+                }`}
+              >
+                <Globe className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
+                <span className="font-mono">{p.page_url}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                }`}>
+                  {p.click_count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -290,7 +293,7 @@ export default function Heatmaps({ selectedPageOverride, showToast, onRefresh })
               <div className="flex items-center gap-2 truncate">
                 <Lock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 <span className="text-slate-400">http://127.0.0.1:8000</span>
-                <span className="text-slate-900 font-bold">{selectedPage || '/demo/index.html'}</span>
+                <span className="text-slate-900 font-bold">{activeRoute}</span>
               </div>
               <span className="text-[10px] text-slate-400 font-sans hidden sm:inline">200 OK</span>
             </div>
@@ -316,7 +319,7 @@ export default function Heatmaps({ selectedPageOverride, showToast, onRefresh })
             {/* 1. LIVE BACKDROP: Actual Webpage Iframe */}
             {backdropMode === 'live' && (
               <iframe
-                src={`http://127.0.0.1:8000${selectedPage || '/demo/index.html'}`}
+                src={`http://127.0.0.1:8000${activeRoute}`}
                 title="Live Page Backdrop"
                 className="absolute inset-0 w-full h-full border-none pointer-events-none opacity-85 select-none"
                 style={{ transform: 'scale(1)', transformOrigin: 'top left' }}
@@ -509,21 +512,39 @@ export default function Heatmaps({ selectedPageOverride, showToast, onRefresh })
 
             {/* Zero State / Empty Canvas */}
             {points.length === 0 && !loading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-300 text-center p-6 space-y-3 z-30 bg-slate-900/80 backdrop-blur-xs">
-                <div className="w-14 h-14 rounded-2xl bg-slate-800 text-blue-400 flex items-center justify-center shadow-lg border border-slate-700">
-                  <Flame className="w-7 h-7" />
+              <div className={`absolute z-30 transition-all ${
+                backdropMode === 'live' 
+                  ? 'top-6 left-1/2 -translate-x-1/2 max-w-md w-11/12 p-4 bg-slate-900/90 text-white rounded-2xl border border-slate-700/80 shadow-2xl backdrop-blur-md text-center space-y-2'
+                  : 'inset-0 flex flex-col items-center justify-center text-slate-300 text-center p-6 space-y-3 bg-slate-900/90'
+              }`}>
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center border border-blue-400/30">
+                    <Flame className="w-4 h-4" />
+                  </div>
+                  <h4 className="font-bold text-sm text-white">0 Clicks Recorded on {activeRoute}</h4>
                 </div>
-                <h4 className="font-bold text-base text-slate-100">No Clicks Recorded on Selected Route</h4>
-                <p className="text-xs text-slate-400 max-w-md">
-                  No interaction coordinates have been logged for <strong className="text-white font-mono">{selectedPage}</strong> yet. You can simulate test clicks or browse the demo website live.
+                <p className="text-[11px] text-slate-300 max-w-sm mx-auto leading-relaxed">
+                  Interact with the live website below to record real coordinates, or generate test clicks.
                 </p>
-                <button
-                  onClick={handleSimulateClicks}
-                  disabled={simulating}
-                  className="mt-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-lg shadow-blue-500/30"
-                >
-                  {simulating ? 'Generating clicks...' : 'Simulate Test Clicks'}
-                </button>
+                <div className="flex items-center justify-center gap-2 pt-1">
+                  <button
+                    onClick={handleSimulateClicks}
+                    disabled={simulating}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-md shadow-blue-500/30 flex items-center gap-1.5"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{simulating ? 'Generating...' : 'Simulate Clicks Here'}</span>
+                  </button>
+                  <a
+                    href={`http://127.0.0.1:8000${activeRoute}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition border border-slate-700 flex items-center gap-1.5"
+                  >
+                    <span>Open in New Tab</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
               </div>
             )}
 

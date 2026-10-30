@@ -37,8 +37,8 @@ export default function Toast({ message, type = 'info', onClose }) {
   const style = getStyle();
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-bounce-in max-w-sm">
-      <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur text-xs font-medium ${style.bg}`}>
+    <div className="fixed top-5 right-5 z-50 animate-in fade-in slide-in-from-top-3 duration-200 max-w-sm">
+      <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl backdrop-blur text-xs font-semibold ${style.bg}`}>
         {style.icon}
         <span className="flex-1 leading-snug">{message}</span>
         <button 
@@ -51,3 +51,4 @@ export default function Toast({ message, type = 'info', onClose }) {
     </div>
   );
 }
+
