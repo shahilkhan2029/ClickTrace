@@ -224,7 +224,8 @@ def run_tests():
     print(f"  Status Note: {ai_status.get('message')}")
     
     # Check that analyze endpoint rejects fabrication when offline or handles safely
-    ai_run = client.post("/api/ai/analyze", json={"project_id": "nexus-college"}).json()
+    print("  Running AI inference with local Gemma 2B (timeout=180s)...")
+    ai_run = client.post("/api/ai/analyze", json={"project_id": "nexus-college"}, timeout=180.0).json()
     print(f"  AI Run Handled Gracefully: Success={ai_run.get('success')}, Note={ai_run.get('details') or ai_run.get('error')}")
     assert "error" in ai_run or ai_run.get("success") is True
     print("  --> PASS: Local inference safely handles model status without fabricating fake AI data.")

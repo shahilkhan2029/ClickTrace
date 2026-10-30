@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
-export default function AiAnalysis() {
+export default function AiAnalysis({ showToast }) {
   const [aiStatus, setAiStatus] = useState(null);
   const [latestReport, setLatestReport] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -72,11 +72,16 @@ export default function AiAnalysis() {
           created_at: new Date().toISOString(),
           report: res.report
         });
+        if (showToast) showToast("Gemma 2B successfully generated UX intelligence report!", "success");
       } else {
-        setErrorMsg(res.error + ': ' + (res.details || ''));
+        const msg = res.error + ': ' + (res.details || '');
+        setErrorMsg(msg);
+        if (showToast) showToast("Analysis failed: " + res.error, "error");
       }
     } catch (err) {
-      setErrorMsg(err.message || 'Analysis failed to execute');
+      const msg = err.message || 'Analysis failed to execute';
+      setErrorMsg(msg);
+      if (showToast) showToast("Analysis error: " + msg, "error");
     } finally {
       setAnalyzing(false);
       setAnalysisStage(1);
@@ -87,6 +92,7 @@ export default function AiAnalysis() {
     if (!latestReport?.report) return;
     navigator.clipboard.writeText(JSON.stringify(latestReport.report, null, 2));
     setCopied(true);
+    if (showToast) showToast("Report JSON copied to clipboard!", "success");
     setTimeout(() => setCopied(false), 2000);
   };
 

@@ -17,3 +17,4 @@ echo Note: Ollama service was left running for fast future inference.
 echo.
 echo Press any key to exit...
 pause >nul
+

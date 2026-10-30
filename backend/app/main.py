@@ -26,7 +26,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware for SDK and Dashboard
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -39,7 +38,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SDK_PATH = os.path.join(BASE_DIR, "static", "sdk", "clicktrace.js")
 DEMO_DIR = os.path.join(os.path.dirname(BASE_DIR), "demo-site")
 
-# Mount demo site if directory exists
 if os.path.exists(DEMO_DIR):
     app.mount("/demo", StaticFiles(directory=DEMO_DIR, html=True), name="demo")
 
@@ -86,8 +84,6 @@ def track_events(batch: EventBatch):
 
     with get_db() as conn:
         cursor = conn.cursor()
-
-        # Track session activity
         sessions_touched = {}
 
         for evt in batch.events:
@@ -129,7 +125,6 @@ def track_events(batch: EventBatch):
                 ts
             ))
 
-        # Upsert sessions
         for sid, sdata in sessions_touched.items():
             cursor.execute("""
                 INSERT INTO sessions (id, project_id, started_at, last_activity_at, page_count)
@@ -191,7 +186,6 @@ def ux_issues_list(project_id: str = "nexus-college"):
     overview = get_overview_metrics(project_id)
 
     issues = []
-    # Add repeated click rage signals
     for idx, rc in enumerate(repeated_clicks):
         issues.append({
             "id": f"issue_rage_{idx+1}",
@@ -206,7 +200,6 @@ def ux_issues_list(project_id: str = "nexus-college"):
             "suggested_fix": f"Check responsiveness and hover/loading states for {rc['element_id']}"
         })
 
-    # Add form abandonment signal if high
     if overview["form_abandonment_rate"] > 30 and overview["forms_started"] >= 2:
         issues.append({
             "id": "issue_form_abandon",
@@ -222,6 +215,15 @@ def ux_issues_list(project_id: str = "nexus-college"):
         })
 
     return issues
+
+@app.post("/api/analytics/reset")
+def reset_analytics(project_id: str = "nexus-college"):
+    with get_db() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM events WHERE project_id = ?", (project_id,))
+        cursor.execute("DELETE FROM sessions WHERE project_id = ?", (project_id,))
+        cursor.execute("DELETE FROM ai_reports WHERE project_id = ?", (project_id,))
+    return {"status": "reset", "project_id": project_id}
 
 @app.get("/api/ai/status")
 async def ai_status():
@@ -239,23 +241,14 @@ async def run_ai_analysis(req: AIAnalysisRequest):
 
 @app.post("/api/simulate")
 def simulate_journey(req: SimulateJourneyRequest):
-    """
-    Simulates a realistic visitor session for testing/evaluation.
-    Clearly marked as simulated in metadata.
-    Scenarios:
-    1. 'frustrated_registration': user visits landing, goes to register, fills form, gets stuck on confusing button, clicks 4 times rapidly, abandons.
-    2. 'smooth_conversion': user lands, reads courses, registers, submits successfully.
-    3. 'bounced_landing': lands on index, scrolls 25%, leaves.
-    """
     import random
-    import time
     ts = datetime.utcnow()
     sess_id = f"sim_{req.scenario}_{int(ts.timestamp())}_{random.randint(100, 999)}"
     pid = req.project_id
     sim_meta = json.dumps({"is_simulated": True, "scenario": req.scenario})
 
     events = []
-    base_time = ts.timestamp() - 60  # 1 min ago
+    base_time = ts.timestamp() - 60
 
     def iso(offset_sec):
         return datetime.fromtimestamp(base_time + offset_sec).isoformat() + "Z"
@@ -269,7 +262,6 @@ def simulate_journey(req: SimulateJourneyRequest):
             ("form_start", "/demo/register.html", "form", "registration_form", "Form interaction initiated", None, None, 1280, 800, None, 15),
             ("click", "/demo/register.html", "input", "input_fullname", "John Doe", 380, 240, 1280, 800, None, 18),
             ("click", "/demo/register.html", "select", "select_major", "Computer Science", 380, 320, 1280, 800, None, 24),
-            # Rage click sequence on tricky submit button (4 clicks within 1.2s)
             ("click", "/demo/register.html", "button", "btn_submit_confusing", "Submit Application", 450, 560, 1280, 800, None, 30.0),
             ("click", "/demo/register.html", "button", "btn_submit_confusing", "Submit Application", 450, 560, 1280, 800, None, 30.3),
             ("click", "/demo/register.html", "button", "btn_submit_confusing", "Submit Application", 451, 561, 1280, 800, None, 30.7),
@@ -287,7 +279,7 @@ def simulate_journey(req: SimulateJourneyRequest):
             ("form_submit", "/demo/register.html", "form", "registration_form", "Form submission attempt", 450, 560, 1280, 800, None, 40),
             ("conversion", "/demo/register.html", "conversion", "application_confirmed", "Successful conversion reached", None, None, 1280, 800, None, 41),
         ]
-    else:  # bounced_landing
+    else:
         events = [
             ("navigation", "/demo/index.html", "window", "page_load", "Nexus College - Home", None, None, 1280, 800, None, 0),
             ("scroll", "/demo/index.html", "window", "scroll_25pct", None, None, None, 1280, 800, 25, 3),

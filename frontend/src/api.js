@@ -36,5 +36,8 @@ export const api = {
   simulateJourney: (scenario, projectId = "nexus-college") => fetchJson("/api/simulate", {
     method: "POST",
     body: JSON.stringify({ project_id: projectId, scenario })
+  }),
+  resetAnalytics: (projectId = "nexus-college") => fetchJson(`/api/analytics/reset?project_id=${projectId}`, {
+    method: "POST"
   })
 };
