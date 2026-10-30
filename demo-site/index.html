@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus College - Admissions & Enrollment</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo-area" id="brand_logo">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">
+          <h1>Nexus College</h1>
+          <span>Excellence in Higher Education</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active" id="nav_home">Home</a></li>
+        <li><a href="courses.html" id="nav_courses">Academic Catalog</a></li>
+        <li><a href="register.html" id="nav_apply">Admissions 2026</a></li>
+        <li>
+          <div class="sdk-indicator" title="ClickTrace SDK is actively tracking interactions">
+            <span class="pulse-dot"></span> ClickTrace Active
+          </div>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-tag">Fall 2026 Early Decisions Open</span>
+      <h2>Shape Your Tomorrow at Nexus College</h2>
+      <p>Join a community of innovators, researchers, and global leaders. World-class faculty, accredited degrees, and hands-on laboratory experiences.</p>
+      <div class="hero-buttons">
+        <a href="register.html" class="btn btn-primary" id="btn_apply_hero">Apply for Fall 2026</a>
+        <a href="courses.html" class="btn btn-outline" id="btn_explore_courses">Explore Programs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Ribbon -->
+  <section class="stats-ribbon">
+    <div class="stats-grid">
+      <div class="stat-card" id="stat_grad_rate">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Career Placement Rate</div>
+      </div>
+      <div class="stat-card" id="stat_majors">
+        <div class="stat-num">45+</div>
+        <div class="stat-label">Accredited Degree Majors</div>
+      </div>
+      <div class="stat-card" id="stat_scholarships">
+        <div class="stat-num">$14M</div>
+        <div class="stat-label">Annual Merit Scholarships</div>
+      </div>
+      <div class="stat-card" id="stat_student_ratio">
+        <div class="stat-num">12:1</div>
+        <div class="stat-label">Student-to-Faculty Ratio</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Programs Section -->
+  <main class="container">
+    <div class="section-title">
+      <h3>Distinguished Academic Disciplines</h3>
+      <p>Discover future-ready curricula designed alongside premier technology and medical institutions.</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card" id="card_engineering">
+        <span class="card-badge">STEM Accredited</span>
+        <h4>School of Computing & AI</h4>
+        <p>Curricula covering software architecture, intelligent systems, cyber security, and autonomous robotics.</p>
+        <a href="courses.html?dept=cs" class="btn btn-outline" style="color: #1e3a8a; border-color: #cbd5e1;" id="link_dept_cs">View Computing Courses &rarr;</a>
+      </div>
+
+      <div class="card" id="card_biotech">
+        <span class="card-badge">Research Laboratory</span>
+        <h4>Biomedical Sciences</h4>
+        <p>Advanced genomics, molecular biology, and clinical trial methodologies supported by hospital partnerships.</p>
+        <a href="courses.html?dept=bio" class="btn btn-outline" style="color: #1e3a8a; border-color: #cbd5e1;" id="link_dept_bio">View Bio Sciences &rarr;</a>
+      </div>
+
+      <div class="card" id="card_business">
+        <span class="card-badge">Global Leadership</span>
+        <h4>School of Business & Economics</h4>
+        <p>Quantitative finance, enterprise strategy, sustainable venture management, and global commerce.</p>
+        <a href="courses.html?dept=biz" class="btn btn-outline" style="color: #1e3a8a; border-color: #cbd5e1;" id="link_dept_biz">View Business Degrees &rarr;</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Judge/Tester Helper Toolbar -->
+  <div class="clicktrace-bar">
+    <div class="ct-bar-left">
+      <span class="ct-badge">DEMO INTERACTION BAR</span>
+      <span>Click elements or trigger test scenarios for ClickTrace analysis:</span>
+    </div>
+    <div class="ct-bar-actions">
+      <a href="register.html" class="ct-btn ct-btn-warning" id="bar_go_register">Test Confusing Form &rarr;</a>
+      <button class="ct-btn" onclick="simulateTest('smooth_conversion')">Simulate Smooth Journey</button>
+      <button class="ct-btn" onclick="simulateTest('frustrated_registration')">Simulate Rage Click Journey</button>
+      <a href="http://localhost:5173" target="_blank" class="ct-btn ct-btn-primary">Open ClickTrace Dashboard &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ClickTrace JavaScript Tracking SDK -->
+  <script src="/sdk/clicktrace.js" data-project-id="nexus-college"></script>
+
+  <script>
+    function simulateTest(scenario) {
+      fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: 'nexus-college', scenario: scenario })
+      }).then(r => r.json()).then(data => {
+        alert('Simulated scenario "' + scenario + '" generated!\nSession ID: ' + data.session_id + '\nNow check ClickTrace Dashboard to see live events and AI analysis.');
+      }).catch(err => {
+        alert('Simulate error: ' + err);
+      });
+    }
+  </script>
+</body>
+</html>

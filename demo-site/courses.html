@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Course Catalog - Nexus College</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .course-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .course-info h4 {
+      font-size: 1.15rem;
+      color: var(--primary);
+      margin-bottom: 0.35rem;
+    }
+    .course-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 1.25rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo-area" id="brand_logo">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">
+          <h1>Nexus College</h1>
+          <span>Excellence in Higher Education</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" id="nav_home">Home</a></li>
+        <li><a href="courses.html" class="active" id="nav_courses">Academic Catalog</a></li>
+        <li><a href="register.html" id="nav_apply">Admissions 2026</a></li>
+        <li>
+          <div class="sdk-indicator" title="ClickTrace SDK is actively tracking interactions">
+            <span class="pulse-dot"></span> ClickTrace Active
+          </div>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="section-title" style="text-align: left; margin-bottom: 1.5rem;">
+      <h3>2026 Undergraduate & Graduate Programs</h3>
+      <p>Browse semester offerings, prerequisites, credit allocations, and faculty advisement details.</p>
+    </div>
+
+    <!-- Department Filters -->
+    <div class="filter-bar" id="dept_filter_group">
+      <button class="filter-btn active" id="btn_filter_all" onclick="filterDept('all')">All Disciplines (12)</button>
+      <button class="filter-btn" id="btn_filter_cs" onclick="filterDept('cs')">Computer Science & AI (4)</button>
+      <button class="filter-btn" id="btn_filter_bio" onclick="filterDept('bio')">Biomedical Engineering (4)</button>
+      <button class="filter-btn" id="btn_filter_biz" onclick="filterDept('biz')">Business Administration (4)</button>
+    </div>
+
+    <!-- Course List -->
+    <div id="course_list">
+      <!-- Course 1 -->
+      <div class="course-card" data-dept="cs" id="course_cs101">
+        <div class="course-info">
+          <span class="card-badge">CS-401 • 4 Credits</span>
+          <h4>Distributed Systems & Cloud Architecture</h4>
+          <p>Consensus algorithms, replication protocols, fault tolerance, and microservice topologies using modern Go and Rust runtimes.</p>
+          <div class="course-meta">
+            <span>Instructor: Dr. Sarah Lin</span>
+            <span>Prerequisite: CS-201</span>
+            <span>Fall 2026</span>
+          </div>
+        </div>
+        <a href="register.html?course=CS-401" class="btn btn-primary" id="btn_enroll_cs401" style="white-space: nowrap; background: #1e3a8a; color: white;">Enroll In Course</a>
+      </div>
+
+      <!-- Course 2 -->
+      <div class="course-card" data-dept="cs" id="course_cs102">
+        <div class="course-info">
+          <span class="card-badge">CS-425 • 4 Credits</span>
+          <h4>Deep Learning & Neural Architectures</h4>
+          <p>Transformers, state-space representations, multimodal alignment, reinforcement learning with human feedback, and latency profiling.</p>
+          <div class="course-meta">
+            <span>Instructor: Prof. Marcus Vance</span>
+            <span>Prerequisite: CS-310</span>
+            <span>Fall 2026</span>
+          </div>
+        </div>
+        <a href="register.html?course=CS-425" class="btn btn-primary" id="btn_enroll_cs425" style="white-space: nowrap; background: #1e3a8a; color: white;">Enroll In Course</a>
+      </div>
+
+      <!-- Course 3 -->
+      <div class="course-card" data-dept="bio" id="course_bio101">
+        <div class="course-info">
+          <span class="card-badge">BME-330 • 4 Credits</span>
+          <h4>Computational Genomics & Precision Diagnostics</h4>
+          <p>Bioinformatics pipelines, variant annotation, statistical genetics, and single-cell RNA sequencing data analysis in clinical settings.</p>
+          <div class="course-meta">
+            <span>Instructor: Dr. Elena Rostova</span>
+            <span>Prerequisite: BIO-205</span>
+            <span>Fall 2026</span>
+          </div>
+        </div>
+        <a href="register.html?course=BME-330" class="btn btn-primary" id="btn_enroll_bme330" style="white-space: nowrap; background: #1e3a8a; color: white;">Enroll In Course</a>
+      </div>
+
+      <!-- Course 4 -->
+      <div class="course-card" data-dept="biz" id="course_biz101">
+        <div class="course-info">
+          <span class="card-badge">BUS-380 • 3 Credits</span>
+          <h4>Quantitative Venture Finance & Capital Markets</h4>
+          <p>Portfolio theory, risk budgeting, venture valuation, private equity structuring, and macroeconomic liquidity analysis.</p>
+          <div class="course-meta">
+            <span>Instructor: Dean Arthur Sterling</span>
+            <span>Prerequisite: ECON-102</span>
+            <span>Fall 2026</span>
+          </div>
+        </div>
+        <a href="register.html?course=BUS-380" class="btn btn-primary" id="btn_enroll_bus380" style="white-space: nowrap; background: #1e3a8a; color: white;">Enroll In Course</a>
+      </div>
+
+      <!-- Extended content to ensure scroll milestones can be reached naturally -->
+      <div class="card" style="margin-top: 3rem; background: #f8fafc; border: 2px dashed #cbd5e1;">
+        <h4 style="color: var(--primary);">Faculty Advisement & Academic Honors Program</h4>
+        <p>Students maintaining a cumulative GPA of 3.80 or higher may petition for accelerated thesis tracks and undergraduate laboratory fellowships. Applications open August 15, 2026.</p>
+        <div style="margin-top: 1rem;">
+          <a href="register.html" class="btn btn-primary" id="btn_bottom_apply" style="background: #1e3a8a; color: white;">Begin Fall Application</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Judge/Tester Helper Toolbar -->
+  <div class="clicktrace-bar">
+    <div class="ct-bar-left">
+      <span class="ct-badge">DEMO INTERACTION BAR</span>
+      <span>Browse courses or proceed directly to enrollment:</span>
+    </div>
+    <div class="ct-bar-actions">
+      <a href="register.html" class="ct-btn ct-btn-warning" id="bar_go_register">Go To Registration Form &rarr;</a>
+      <a href="http://localhost:5173" target="_blank" class="ct-btn ct-btn-primary">View ClickTrace Analytics &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ClickTrace JavaScript Tracking SDK -->
+  <script src="/sdk/clicktrace.js" data-project-id="nexus-college"></script>
+
+  <script>
+    function filterDept(dept) {
+      const cards = document.querySelectorAll('.course-card');
+      const btns = document.querySelectorAll('.filter-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      cards.forEach(card => {
+        if (dept === 'all' || card.getAttribute('data-dept') === dept) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fall 2026 Undergraduate Registration - Nexus College</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .error-hint {
+      color: #ef4444;
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+      display: none;
+      font-weight: 600;
+    }
+    .success-panel {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      max-width: 600px;
+      margin: 2rem auto;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: #ecfdf5;
+      color: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1.5rem;
+      border: 2px solid #a7f3d0;
+    }
+    .ux-friction-banner {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: #92400e;
+    }
+    .ux-friction-banner strong {
+      color: #78350f;
+    }
+    .terms-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 0.85rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .rage-counter-badge {
+      display: inline-block;
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="header">
+    <div class="nav-container">
+      <a href="index.html" class="logo-area" id="brand_logo">
+        <div class="logo-icon">N</div>
+        <div class="logo-text">
+          <h1>Nexus College</h1>
+          <span>Excellence in Higher Education</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" id="nav_home">Home</a></li>
+        <li><a href="courses.html" id="nav_courses">Academic Catalog</a></li>
+        <li><a href="register.html" class="active" id="nav_apply">Admissions 2026</a></li>
+        <li>
+          <div class="sdk-indicator" title="ClickTrace SDK is actively tracking interactions">
+            <span class="pulse-dot"></span> ClickTrace Active
+          </div>
+        </li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top: 2.5rem;">
+    
+    <!-- Registration Form View -->
+    <div id="registration_view">
+      <div class="section-title">
+        <h3>Fall 2026 Admissions Application</h3>
+        <p>Complete your undergraduate registration. All fields marked with * are required.</p>
+      </div>
+
+      <div class="form-card">
+        <!-- Educational UX Notice for Hackathon Reviewers -->
+        <div class="ux-friction-banner">
+          <strong>Interactive UX Scenario:</strong>
+          The "Submit Application" button below has an intentional friction condition: if the required acknowledgment is unfulfilled or confusing, rapid clicking will produce real <em>rage-click telemetry</em> that ClickTrace captures and flags for Gemma AI investigation!
+        </div>
+
+        <form id="enrollment_form" onsubmit="handleFormSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="student_first_name">First Name *</label>
+              <input type="text" id="student_first_name" name="first_name" class="form-control" placeholder="Jane" required>
+            </div>
+            <div class="form-group">
+              <label for="student_last_name">Last Name *</label>
+              <input type="text" id="student_last_name" name="last_name" class="form-control" placeholder="Doe" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="student_email">Applicant Email Address *</label>
+              <input type="email" id="student_email" name="email" class="form-control" placeholder="jane.doe@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="student_phone">Contact Phone Number</label>
+              <input type="tel" id="student_phone" name="phone" class="form-control" placeholder="+1 (555) 019-2834">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="selected_major">Declared Major / Degree Program *</label>
+            <select id="selected_major" name="major" class="form-control" required>
+              <option value="">-- Choose Degree Program --</option>
+              <option value="CS-401">B.S. in Computer Science & Artificial Intelligence</option>
+              <option value="BME-330">B.S. in Biomedical Engineering & Genomics</option>
+              <option value="BUS-380">B.S. in Quantitative Venture Finance</option>
+              <option value="ENG-210">B.S. in Electrical & Robotics Engineering</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="enrollment_term">Target Entry Term</label>
+              <select id="enrollment_term" name="term" class="form-control">
+                <option value="fall_2026">Fall 2026 (Priority Cohort)</option>
+                <option value="spring_2027">Spring 2027</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="housing_preference">Campus Housing</label>
+              <select id="housing_preference" name="housing" class="form-control">
+                <option value="on_campus">On-Campus Residence Hall</option>
+                <option value="commuter">Off-Campus / Commuter</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- The Confusing / Hidden Condition Checkbox -->
+          <div class="terms-box">
+            <label style="display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; font-size: 0.85rem;">
+              <input type="checkbox" id="terms_checkbox" style="margin-top: 0.2rem;">
+              <span>I confirm accuracy of educational credentials and accept Nexus College academic integrity codes. <span style="color:#ef4444">*</span></span>
+            </label>
+            <div id="terms_error" class="error-hint">You must accept the terms before submitting.</div>
+          </div>
+
+          <!-- The Intentionally Confusing Submit Button -->
+          <div class="confusing-btn-wrapper">
+            <button type="submit" id="btn_submit_confusing" class="btn-confusing">
+              Submit Application
+              <span id="click_tracker" class="rage-counter-badge" style="display:none;">Clicks: 0</span>
+            </button>
+            <p style="font-size: 0.75rem; color: #94a3b8; text-align: center; margin-top: 0.5rem;">
+              Tip: Click button rapidly without checking the terms box to trigger rage clicks, or check the box to complete.
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Successful Conversion View -->
+    <div id="success_view" class="success-panel">
+      <div class="success-icon">&check;</div>
+      <h3 style="font-size: 1.75rem; color: #1e3a8a; margin-bottom: 0.75rem;">Application Successfully Submitted!</h3>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">
+        Confirmation Reference: <strong style="color: #0f172a;" id="conf_ref">NX-2026-9842</strong><br>
+        Your application is logged in the registry. A verification email has been dispatched.
+      </p>
+      <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1.75rem; font-size: 0.85rem; text-align: left;">
+        <strong>ClickTrace Event Recorded:</strong>
+        <p style="color: #059669; margin-top: 0.25rem;">&bull; Form interaction completed</p>
+        <p style="color: #059669;">&bull; Goal 'admissions_submitted' tracked as Conversion</p>
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <a href="index.html" class="btn btn-outline" style="color: #1e3a8a; border-color: #cbd5e1;">Return to Home</a>
+        <a href="http://localhost:5173" target="_blank" class="btn btn-primary" style="background: #1e3a8a; color: white;">Inspect Dashboard &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating Judge/Tester Helper Toolbar -->
+  <div class="clicktrace-bar">
+    <div class="ct-bar-left">
+      <span class="ct-badge">DEMO INTERACTION BAR</span>
+      <span>Simulate user testing flows:</span>
+    </div>
+    <div class="ct-bar-actions">
+      <button class="ct-btn ct-btn-warning" onclick="triggerRageClickSimulation()">Trigger 5x Rapid Clicks</button>
+      <button class="ct-btn" onclick="autoFillForm(true)">Auto-Fill & Complete Form</button>
+      <a href="http://localhost:5173" target="_blank" class="ct-btn ct-btn-primary">Open ClickTrace Dashboard &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ClickTrace JavaScript Tracking SDK -->
+  <script src="/sdk/clicktrace.js" data-project-id="nexus-college"></script>
+
+  <script>
+    let rapidClickCount = 0;
+    let clickTimer = null;
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const termsBox = document.getElementById('terms_checkbox');
+      const submitBtn = document.getElementById('btn_submit_confusing');
+      const termsError = document.getElementById('terms_error');
+      const tracker = document.getElementById('click_tracker');
+
+      rapidClickCount++;
+      tracker.style.display = 'inline-block';
+      tracker.textContent = 'Rapid Clicks: ' + rapidClickCount;
+
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        rapidClickCount = 0;
+        tracker.style.display = 'none';
+      }, 2500);
+
+      // If terms NOT checked, create the confusing friction state:
+      if (!termsBox.checked) {
+        submitBtn.classList.remove('shake');
+        void submitBtn.offsetWidth; // retrigger css animation
+        submitBtn.classList.add('shake');
+        termsError.style.display = 'block';
+
+        // Intentionally do NOT submit the form!
+        // This generates repeated click events recorded by SDK.
+        return false;
+      }
+
+      // If terms ARE checked, proceed to smooth success conversion!
+      termsError.style.display = 'none';
+      submitBtn.textContent = 'Processing Application...';
+      submitBtn.disabled = true;
+
+      // Track formal conversion through ClickTrace SDK
+      if (window.ClickTrace) {
+        window.ClickTrace.trackConversion('admissions_submitted', {
+          major: document.getElementById('selected_major').value,
+          term: document.getElementById('enrollment_term').value
+        });
+      }
+
+      setTimeout(() => {
+        document.getElementById('registration_view').style.display = 'none';
+        document.getElementById('conf_ref').textContent = 'NX-2026-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('success_view').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 400);
+    }
+
+    function triggerRageClickSimulation() {
+      const btn = document.getElementById('btn_submit_confusing');
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          btn.click();
+        }, i * 200);
+      }
+    }
+
+    function autoFillForm(checkTerms) {
+      document.getElementById('student_first_name').value = 'Alex';
+      document.getElementById('student_last_name').value = 'Rivera';
+      document.getElementById('student_email').value = 'alex.rivera@example.com';
+      document.getElementById('student_phone').value = '555-019-3321';
+      document.getElementById('selected_major').value = 'CS-401';
+      if (checkTerms) {
+        document.getElementById('terms_checkbox').checked = true;
+      }
+      // Trigger focusin event so SDK notes form_start
+      document.getElementById('student_first_name').dispatchEvent(new Event('focusin', { bubbles: true }));
+    }
+
+    // Auto-select course if in URL query
+    const urlParams = new URLSearchParams(window.location.search);
+    const course = urlParams.get('course');
+    if (course) {
+      const select = document.getElementById('selected_major');
+      for (let opt of select.options) {
+        if (opt.value.includes(course)) {
+          select.value = opt.value;
+          break;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
