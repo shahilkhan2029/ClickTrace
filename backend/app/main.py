@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from .database import init_db, get_db
-from .schemas import EventBatch, ProjectCreate, ProjectResponse, AIAnalysisRequest, SimulateJourneyRequest
+from .schemas import EventBatch, ProjectCreate, ProjectResponse, AIAnalysisRequest, SimulateJourneyRequest, AIChatRequest
 from .analytics import (
     get_overview_metrics,
     get_sessions_list,
@@ -18,7 +18,7 @@ from .analytics import (
     detect_repeated_clicks,
     get_scroll_analytics
 )
-from .ai_analyst import check_ollama_status, analyze_ux_with_gemma, get_latest_ai_report
+from .ai_analyst import check_ollama_status, analyze_ux_with_gemma, get_latest_ai_report, chat_with_ux_analyst
 
 app = FastAPI(
     title="ClickTrace API",
@@ -237,6 +237,11 @@ def latest_ai_report(project_id: str = "nexus-college"):
 @app.post("/api/ai/analyze")
 async def run_ai_analysis(req: AIAnalysisRequest):
     result = await analyze_ux_with_gemma(req.project_id, req.limit_sessions)
+    return result
+
+@app.post("/api/ai/chat")
+async def run_ai_chat(req: AIChatRequest):
+    result = await chat_with_ux_analyst(req.message, req.project_id, req.history)
     return result
 
 @app.post("/api/simulate")

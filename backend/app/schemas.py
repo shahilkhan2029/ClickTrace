@@ -38,3 +38,8 @@ class AIAnalysisRequest(BaseModel):
 class SimulateJourneyRequest(BaseModel):
     project_id: str = "nexus-college"
     scenario: str = "frustrated_registration"  # "smooth_conversion", "frustrated_registration", "bounced_landing"
+
+class AIChatRequest(BaseModel):
+    message: str
+    project_id: str = "nexus-college"
+    history: Optional[List[Dict[str, str]]] = []

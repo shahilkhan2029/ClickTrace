@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Toast from './components/Toast';
+import ChatBot from './components/ChatBot';
 import Overview from './pages/Overview';
 import Heatmaps from './pages/Heatmaps';
 import Sessions from './pages/Sessions';
@@ -199,6 +200,9 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Floating Local AI UX Copilot Chatbot */}
+      <ChatBot projectId="nexus-college" />
     </div>
   );
 }

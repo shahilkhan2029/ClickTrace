@@ -39,5 +39,9 @@ export const api = {
   }),
   resetAnalytics: (projectId = "nexus-college") => fetchJson(`/api/analytics/reset?project_id=${projectId}`, {
     method: "POST"
+  }),
+  chatWithAi: (message, history = [], projectId = "nexus-college") => fetchJson("/api/ai/chat", {
+    method: "POST",
+    body: JSON.stringify({ message, history, project_id: projectId })
   })
 };
