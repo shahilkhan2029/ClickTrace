@@ -18,6 +18,7 @@ export default function App() {
   const [funnel, setFunnel] = useState(null);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [dataVersion, setDataVersion] = useState(0);
 
   const showToast = (message, type = 'info') => {
     setToast({ message, type });
@@ -36,6 +37,24 @@ export default function App() {
       setFunnel(fn);
     } catch (e) {
       console.error("Data refresh failed", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClearData = async () => {
+    try {
+      setLoading(true);
+      await api.resetAnalytics('nexus-college');
+      try {
+        window.sessionStorage.removeItem('clicktrace_session_id');
+      } catch (e) {}
+      setDataVersion(prev => prev + 1);
+      await loadData();
+      showToast("All telemetry data cleared! The dashboard is 100% fresh for your demo.", "success");
+    } catch (err) {
+      console.error("Reset error:", err);
+      showToast("Failed to clear data: " + err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -121,6 +140,7 @@ export default function App() {
           title={title} 
           subtitle={subtitle} 
           onRefresh={loadData} 
+          onClearData={handleClearData}
           loading={loading} 
           showToast={showToast}
         />
@@ -128,6 +148,7 @@ export default function App() {
         <main className="flex-1 overflow-y-auto">
           {activeTab === 'overview' && (
             <Overview 
+              key={`overview-${dataVersion}`}
               overview={overview} 
               funnel={funnel} 
               onNavigate={handleNavigate} 
@@ -138,6 +159,7 @@ export default function App() {
 
           {activeTab === 'heatmaps' && (
             <Heatmaps 
+              key={`heatmaps-${dataVersion}`}
               selectedPageOverride={heatmapPageOverride} 
               showToast={showToast}
               onRefresh={loadData}
@@ -146,12 +168,14 @@ export default function App() {
 
           {activeTab === 'sessions' && (
             <Sessions 
+              key={`sessions-${dataVersion}`}
               showToast={showToast}
             />
           )}
 
           {activeTab === 'issues' && (
             <UxIssues 
+              key={`issues-${dataVersion}`}
               onNavigate={handleNavigate} 
               showToast={showToast}
             />
@@ -159,15 +183,17 @@ export default function App() {
 
           {activeTab === 'ai' && (
             <AiAnalysis 
+              key={`ai-${dataVersion}`}
               showToast={showToast}
             />
           )}
 
           {activeTab === 'settings' && (
             <Settings 
+              key={`settings-${dataVersion}`}
               overview={overview}
               health={health}
-              onResetData={loadData}
+              onResetData={handleClearData}
               showToast={showToast}
             />
           )}
