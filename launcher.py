@@ -19,6 +19,22 @@ def is_port_open(port: int, host: str = "127.0.0.1") -> bool:
     except Exception:
         return False
 
+def kill_port(port: int):
+    """Ensure any stale process on port is stopped before launching."""
+    if not is_port_open(port):
+        return
+    try:
+        output = subprocess.check_output(f"netstat -ano | findstr :{port}", shell=True).decode()
+        for line in output.strip().splitlines():
+            parts = line.split()
+            if len(parts) >= 5 and "LISTENING" in line.upper():
+                pid = int(parts[-1])
+                if pid > 0 and pid != os.getpid():
+                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(0.5)
+    except Exception:
+        pass
+
 def wait_for_port(port: int, max_wait: float = 15.0, host: str = "127.0.0.1") -> bool:
     """Wait until port is accepting connections."""
     start = time.time()
@@ -90,21 +106,20 @@ def main():
 
     # 2. Start FastAPI Backend
     print("[2/3] Starting FastAPI Backend (:8000)...", end="", flush=True)
-    if not is_port_open(8000):
-        backend_proc = subprocess.Popen(
-            [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "127.0.0.1", "--port", "8000"],
-            cwd=str(ROOT_DIR),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
-        )
-        processes.append(backend_proc)
-        if wait_for_port(8000, max_wait=10):
-            print(" Active & Healthy")
-        else:
-            print(" Starting up...")
+    # Always reload to ensure newest API endpoints are live
+    kill_port(8000)
+    backend_proc = subprocess.Popen(
+        [sys.executable, "-m", "uvicorn", "backend.app.main:app", "--host", "127.0.0.1", "--port", "8000", "--reload"],
+        cwd=str(ROOT_DIR),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+    )
+    processes.append(backend_proc)
+    if wait_for_port(8000, max_wait=10):
+        print(" Active & Healthy")
     else:
-        print(" Already Active")
+        print(" Starting up...")
 
     # 3. Start React Frontend
     print("[3/3] Starting React Dashboard (:5173)...", end="", flush=True)
