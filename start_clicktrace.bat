@@ -28,7 +28,7 @@ if %errorlevel% neq 0 (
         )
     )
     start "" /min "!OLLAMA_BIN!" serve
-    timeout /t 3 /nobreak >nul
+    ping 127.0.0.1 -n 3 >nul
     echo       [OK] Ollama service started.
 ) else (
     echo       [OK] Ollama service is already active on port 11434.
@@ -42,7 +42,7 @@ netstat -ano | findstr "127.0.0.1:8000" >nul
 if %errorlevel% neq 0 (
     echo       Starting FastAPI Backend with Uvicorn...
     start "ClickTrace Backend" /min python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
-    timeout /t 2 /nobreak >nul
+    ping 127.0.0.1 -n 3 >nul
     echo       [OK] Backend started.
 ) else (
     echo       [OK] FastAPI Backend is already active on port 8000.
@@ -58,17 +58,17 @@ if %errorlevel% neq 0 (
     cd /d "%~dp0frontend"
     start "ClickTrace Frontend" /min cmd /c "npm run dev"
     cd /d "%~dp0"
-    timeout /t 3 /nobreak >nul
+    ping 127.0.0.1 -n 3 >nul
     echo       [OK] Frontend started.
 ) else (
     echo       [OK] React Dashboard is already active on port 5173.
 )
 
 :: -----------------------------------------------------------------------------
-:: Step 4: Verify and Open Browser
+:: Step 4: Open Browser
 :: -----------------------------------------------------------------------------
-echo [4/4] Verifying stack health and opening application in browser...
-timeout /t 2 /nobreak >nul
+echo [4/4] Opening application in your default browser...
+ping 127.0.0.1 -n 2 >nul
 
 echo.
 echo ==============================================================================
@@ -87,8 +87,7 @@ start http://127.0.0.1:8000/demo/index.html
 
 echo.
 echo Tip: Keep this window open or close it when done.
-echo To shut down all ClickTrace services, you can close the minimized windows
-echo or run: taskkill /F /IM python.exe /IM node.exe
+echo To shut down all ClickTrace services, simply run: stop_clicktrace.bat
 echo.
 echo Press any key to exit this launcher window...
 pause >nul
